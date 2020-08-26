@@ -2,22 +2,24 @@
 <html>
     <head>
     </head>
-    <body> 
+    <body>
     <script>
-        {
-            const socket = new WebSocket('ws://localhost:3333');
- 
-socket.addEventListener('open', () => {
-  socket.send('xochi');
-  socket.send('gavin');
-  socket.send('appa');
-  socket.send('momo');
-});
- 
-socket.addEventListener('message', event => {
-  console.log(`Message from server: ${event.data}`);
-});
+      const socket = new WebSocket('ws://localhost:3333');
+      socket.addEventListener('open', () => {
+        socket.send(JSON.stringify({'name': 'xochi'}));
+
+      });
+      socket.addEventListener('message', event => {
+        var data = JSON.parse(event.data)
+        if (data.command == 'expired') {
+          console.log("Time up")
         }
+        if (data.command == 'queue_info') {
+          console.log("active_users" + data.active_users)
+          console.log("queued_users" + data.queued_users)
+
+        }
+      });
 
 </script>
  </body>
