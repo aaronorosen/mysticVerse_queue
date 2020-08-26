@@ -10,28 +10,30 @@ console.log('socket server is running on port 3333');
 
 var users = [];
 var queue_slots = []
+
 // time in seconds
-const maxTime =  5000;
+const maxTime =  60;
 const userList = [];
 const activeUserList = [];
-
-const activeUsers = [{videoUrl : 'placeholder1',
-                       user : null,
-                       name: null,
-                       connection : null,
-                       time : null},
-                      //  {videoUrl : 'placeholder2',
-                      //   user : null,
-                      //   connection : null,
-                      //   time : null},
-                      //  {videoUrl : 'placeholder3',
-                      //   user : null,
-                      //   connection : null,
-                      //   time : null}
-                      ];
-
-
 var socket_list = []
+var queue_slots = 5;
+var activeUsers = populate_active_users()
+
+function populate_active_users() {
+    var setup_queue = []
+    for (var i = 0; i < queue_slots; i++) {
+        setup_queue.push({
+            videoUrl : 'placeholder1',
+            user : null,
+            name: null,
+            connection : null,
+            time : null,
+        })
+    }
+    return setup_queue
+}
+
+
 server.on('connection', (socket) => {
     socket.on('message', message => {
         var data = (JSON.parse(message))
@@ -61,6 +63,7 @@ function get_queue_stats() {
             "active_users": active_users}
 }
 
+
 setInterval(function() {
     var stats = get_queue_stats()
     for (var sock of socket_list) {
@@ -72,10 +75,12 @@ setInterval(function() {
 }, 2000)
 
 setInterval(function() {
-    console.log(users);
+    var stats = get_queue_stats()
+
+    console.log("Users in queue " + stats.queued_users.length +
+                " active " + stats.active_users.length);
     for(var i = 0; i < activeUsers.length; i++) {
         // there is an active slot
-        console.log(i)
         if(activeUsers[i].user === null) {
             if(users.length > 0) {
                 // copy user into active_users
@@ -88,12 +93,14 @@ setInterval(function() {
                 users.shift();
 
                 activeUsers[i].time = new Date();
+                console.log("GO live")
                 activeUsers[i].connection.send(
                     JSON.stringify({'command': 'go_live'}))
             }
         }
         if (checkTimeOut(activeUsers[i])) {
             activeUsers[i].user = null;
+            console.log("GO expired")
             //activeUserList.shift();
             activeUsers[i].connection.send(
                 JSON.stringify({"command": "expired"}))
@@ -106,10 +113,9 @@ setInterval(function() {
 
 function checkTimeOut (user) {
     if (user.connection === null) return false
-    console.log(user.name + " " + user.time)
     const currentTime = new Date()
-    console.log(currentTime - user.time)
-    if(currentTime - user.time >= maxTime) {
+    console.log(user.name + " active for - " + (currentTime - user.time))
+    if(currentTime - user.time >= maxTime * 1000) {
         console.log("Expired")
         return true;
     } else {
