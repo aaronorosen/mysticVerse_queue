@@ -12,7 +12,7 @@ var users = [];
 var queue_slots = []
 
 // time in seconds
-const maxTime =  60;
+const maxTime =  12;
 const userList = [];
 const activeUserList = [];
 var socket_list = []
