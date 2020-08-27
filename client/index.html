@@ -13,11 +13,16 @@
       socket.addEventListener('message', event => {
         var data = JSON.parse(event.data)
         if (data.command == 'expired') {
+          console.log("hide: 3dverse component")
           console.log("Time up")
         }
+        if (data.command == 'go_live') {
+          console.log("Go to active & show 3dverse component")
+        }
         if (data.command == 'queue_info') {
-          console.log("active_users" + data.active_users)
-          console.log("queued_users" + data.queued_users)
+          // display users in each queue
+          console.log("active_users: " + data.active_users)
+          console.log("queued_users: " + data.queued_users)
 
         }
       });
