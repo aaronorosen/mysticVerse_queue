@@ -12,11 +12,11 @@ var users = [];
 var queue_slots = []
 
 // time in seconds
-const maxTime =  12;
+const maxTime =  1200;
 const userList = [];
 const activeUserList = [];
 var socket_list = []
-var queue_slots = 5;
+var queue_slots = 20;
 var activeUsers = populate_active_users()
 
 function populate_active_users() {
