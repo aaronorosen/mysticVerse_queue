@@ -26,6 +26,7 @@ function populate_active_users() {
             videoUrl : 'placeholder1',
             user : null,
             name: null,
+            pic: null,
             connection : null,
             time : null,
         })
@@ -39,6 +40,7 @@ server.on('connection', (socket) => {
         var data = (JSON.parse(message))
         users.push({
             user: data.name,
+            pic: data.pic,
             name: data.name,
             connection : socket
         })
@@ -51,12 +53,13 @@ function get_queue_stats() {
     var active_users = []
     var queued_users = []
     for (var user of users) {
-        queued_users.push(user.name)
+        queued_users.push({'name': user.name, 'pic': user.pic})
     }
 
     for(var i = 0; i < activeUsers.length; i++) {
         if(activeUsers[i].user != null) {
-            active_users.push(activeUsers[i].name)
+            active_users.push({'name': activeUsers[i].name,
+                               'pic': activeUsers[i].pic})
         }
     }
     return {"queued_users": queued_users,
@@ -69,8 +72,8 @@ setInterval(function() {
     for (var sock of socket_list) {
         sock.send(
             JSON.stringify({"command": "queue_info",
-                            "active_users": stats.active_users,
-                            "queued_users": stats.queued_users }))
+                            "active_users": JSON.stringify(stats.active_users),
+                            "queued_users": JSON.stringify(stats.queued_users) }))
     }
 }, 2000)
 
@@ -86,6 +89,7 @@ setInterval(function() {
                 // copy user into active_users
                 activeUsers[i].user = users[0].user;
                 activeUsers[i].name = users[0].name;
+                activeUsers[i].pic = users[0].pic;
                 activeUserList.push(userList[0]);
                 activeUsers[i].connection = users[0].connection;
 
