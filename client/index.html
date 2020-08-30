@@ -4,13 +4,19 @@
     </head>
     <body>
     <script>
-      // const socket = new WebSocket('wss://queue.strategicaialliance.org:3332');
+      //const socket = new WebSocket('wss://queue.strategicaialliance.org:3332');
       const socket = new WebSocket('ws://localhost:3333');
       socket.addEventListener('open', () => {
         // pass in playa name from react
         socket.send(JSON.stringify({
           'name': 'xochi',
           'pic': "https://firebasestorage.googleapis.com/v0/b/mysticverse.appspot.com/o/images%2F2vKA3kC108O3XQgpHB3RfGELjST2?alt=media&token=a0d36acf-5a6f-4b33-8b38-9017149cbbd6"}));
+
+        setInterval(function() {
+          socket.send(JSON.stringify({
+            'alive': "true",
+          }));
+        }, 5000)
       });
       socket.addEventListener('message', event => {
         var data = JSON.parse(event.data)

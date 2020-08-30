@@ -38,6 +38,13 @@ function populate_active_users() {
 server.on('connection', (socket) => {
     socket.on('message', message => {
         var data = (JSON.parse(message))
+        console.log(data)
+        if (data.alive) {
+            console.log("ALIVE")
+            socket.last_heard = new Date()
+            return
+        }
+        socket.last_heard = new Date()
         users.push({
             user: data.name,
             pic: data.pic,
@@ -119,11 +126,18 @@ function checkTimeOut (user) {
     if (user.connection === null) return false
     const currentTime = new Date()
     console.log(user.name + " active for - " + (currentTime - user.time))
+    console.log(currentTime - user.connection.last_heard)
+
+    if(currentTime - user.connection.last_heard >= 10000) {
+        console.log("SOCKET IS NOT ALIVEEEE")
+        return true
+    }
+
     if(currentTime - user.time >= maxTime * 1000) {
-        console.log("Expired")
+        //console.log("Expired")
         return true;
     } else {
-        console.log("not Expired")
+        //console.log("not Expired")
         return false;
     }
 }
