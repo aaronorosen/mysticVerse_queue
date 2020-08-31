@@ -4,8 +4,8 @@
     </head>
     <body>
     <script>
-      const socket = new WebSocket('wss://queue.strategicaialliance.org:3332');
-      //const socket = new WebSocket('ws://localhost:3333');
+      //;const socket = new WebSocket('wss://queue.strategicaialliance.org:3332');
+      const socket = new WebSocket('ws://localhost:3333');
       socket.addEventListener('open', () => {
         // pass in playa name from react
         socket.send(JSON.stringify({
