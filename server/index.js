@@ -66,7 +66,7 @@ function get_queue_stats() {
     for(var i = 0; i < activeUsers.length; i++) {
         if(activeUsers[i].user != null) {
             active_users.push({'name': activeUsers[i].name,
-                               'time_left': (maxTime * 1000) - new Date() - activeUsers[i].time,
+                               'time_left': (maxTime * 1000) - (new Date() - activeUsers[i].time),
                                'pic': activeUsers[i].pic})
         }
     }
