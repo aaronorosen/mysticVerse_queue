@@ -17,6 +17,13 @@
             'alive': "true",
           }));
         }, 5000)
+
+        setTimeout(function() {
+          socket.send(JSON.stringify({
+            'enter_queue': "true",
+          }));
+        }, 2000);
+
       });
       socket.addEventListener('message', event => {
         var data = JSON.parse(event.data)

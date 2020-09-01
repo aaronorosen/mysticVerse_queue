@@ -39,19 +39,26 @@ server.on('connection', (socket) => {
     socket.on('message', message => {
         var data = (JSON.parse(message))
         console.log(data)
+
+
         if (data.alive) {
             console.log("ALIVE")
             socket.last_heard = new Date()
             return
         }
-        socket.last_heard = new Date()
-        users.push({
-            user: data.name,
-            pic: data.pic,
-            name: data.name,
-            connection : socket
-        })
-        socket_list.push(socket)
+
+        if (data.enter_queue) {
+            socket.last_heard = new Date()
+            users.push(socket._user_info)
+        } else {
+            socket._user_info = {
+                user: data.name,
+                pic: data.pic,
+                name: data.name,
+                connection : socket
+            }
+            socket_list.push(socket)
+        }
     });
 });
 
